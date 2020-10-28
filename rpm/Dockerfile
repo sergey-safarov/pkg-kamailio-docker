@@ -45,7 +45,7 @@ RUN set -e; \
     if [ "${base_image}" == "centos" -a "${image_tag}" == "7" ]; then \
         rpm_extra_builds="libphonenumber"; \
     fi; \
-    if [ "${base_image}" == "fedora" ]; then \
+    if [ "${base_image}" == "fedora" -a "${image_tag}" -le "31" ]; then \
         rpm_extra_builds="libphonenumber"; \
     fi; \
     ${pkg_manager} update; \
