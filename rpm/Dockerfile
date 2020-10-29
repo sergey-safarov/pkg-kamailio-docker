@@ -44,6 +44,7 @@ RUN set -e; \
     fi; \
     if [ "${base_image}" == "centos" -a "${image_tag}" == "7" ]; then \
         rpm_extra_builds="libphonenumber"; \
+        sed -i -e 's/Version:.*/Version: 8.10.7/' rpm_extra_specs/libphonenumber.spec; \
     fi; \
     if [ "${base_image}" == "fedora" -a "${image_tag}" -le "31" ]; then \
         rpm_extra_builds="libphonenumber"; \
