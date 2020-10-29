@@ -65,11 +65,10 @@ RUN set -e; \
     fi; \
     wget https://raw.githubusercontent.com/kamailio/kamailio/master/pkg/kamailio/obs/kamailio.spec; \
     if [ "${base_image}" == "centos" -a "${image_tag}" == "6" ]; then \
-        sed -i -e '/libphonenumber-devel/d' -e 's/systemd-mini/systemd/' kamailio.spec; \
         yum -y install yum-utils; \
         yum-builddep -y kamailio.spec; \
     else \
-        ${pkg_manager} install $(rpmspec -P kamailio.spec | grep BuildRequires | sed -r -e 's/BuildRequires:\s+//' -e 's/,//g' -e '/libphonenumber-devel/d' -e 's/systemd-mini/systemd/' | xargs); \
+        ${pkg_manager} install $(rpmspec -P kamailio.spec | grep BuildRequires | sed -r -e 's/BuildRequires:\s+//' -e 's/,//g' | xargs); \
     fi; \
     if [ "${base_image}" == "registry.redhat.io/ubi7" -o "${base_image}" == "registry.redhat.io/ubi8" ]; then \
         subscription-manager remove --all; \
