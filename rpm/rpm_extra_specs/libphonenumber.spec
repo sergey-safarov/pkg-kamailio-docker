@@ -36,11 +36,11 @@ developing applications that use %{name}.
 
 %build
 %cmake cpp
-%cmake_build
+%__cmake --build .
 
 
 %install
-%cmake_install
+make install DESTDIR=%{buildroot}
 find %{buildroot} -name '*.a' -delete
 find %{buildroot} -name '*.la' -delete
 
