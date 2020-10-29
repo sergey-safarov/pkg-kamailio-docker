@@ -50,8 +50,20 @@ RUN set -e; \
     fi; \
     ${pkg_manager} update; \
     ${pkg_manager} install rpm-build gcc make wget bison flex which git ${extra_packages}; \
-    wget https://raw.githubusercontent.com/kamailio/kamailio/master/pkg/kamailio/obs/kamailio.spec; \
     for i in ${rpm_extra_builds}; do ${pkg_manager} install $(rpmspec -P rpm_extra_specs/${i}.spec | grep BuildRequires | sed -r -e 's/BuildRequires:\s+//' -e 's/,//g' | xargs); done; \
+    if [ ! -z "${rpm_extra_builds}" ]; then \
+        echo "Building extra deps RPM packages"; \
+        for i in ${rpm_extra_builds}; do rpmbuild --undefine _disable_source_fetch --nocheck -ba rpm_extra_specs/${i}.spec; done \
+    fi; \
+    if [ ! -z "${rpm_extra_builds}" ]; then \
+        echo "Installing extra RPM deps"; \
+        rpm -i $(find ~/rpmbuild/RPMS -type f \( -name "*.rpm" -not -name "*.src.rpm" \) | xargs); \
+        mkdir /deps; \
+        mv ~/rpmbuild/RPMS /deps; \
+        mv ~/rpmbuild/SRPMS /deps; \
+        rm -Rf ~/rpmbuild; \
+    fi; \
+    wget https://raw.githubusercontent.com/kamailio/kamailio/master/pkg/kamailio/obs/kamailio.spec; \
     if [ "${base_image}" == "centos" -a "${image_tag}" == "6" ]; then \
         sed -i -e '/libphonenumber-devel/d' -e 's/systemd-mini/systemd/' kamailio.spec; \
         yum -y install yum-utils; \
@@ -64,16 +76,4 @@ RUN set -e; \
         subscription-manager unregister; \
     fi; \
     rm -Rf /var/cache/dnf/* /var/cache/yum/* /var/cache/zypp/*; \
-    rm -f kamailio.spec; \
-    if [ ! -z "${rpm_extra_builds}" ]; then \
-        echo "Building extra deps RPM packages"; \
-        for i in ${rpm_extra_builds}; do rpmbuild --undefine _disable_source_fetch --nocheck -ba rpm_extra_specs/${i}.spec; done \
-    fi; \
-    if [ ! -z "${rpm_extra_builds}" ]; then \
-        echo "Installing extra RPM deps"; \
-        rpm -i $(find ~/rpmbuild/RPMS -type f \( -name "*.rpm" -not -name "*.src.rpm" \) | xargs); \
-        mkdir /deps; \
-        mv ~/rpmbuild/RPMS /deps; \
-        mv ~/rpmbuild/SRPMS /deps; \
-        rm -Rf ~/rpmbuild; \
-    fi
+    rm -f kamailio.spec
