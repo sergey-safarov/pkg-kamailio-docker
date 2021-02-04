@@ -39,7 +39,7 @@ RUN set -e; \
     fi; \
     if [ "${base_image}" == "centos" -a "${image_tag}" == "8" ]; then \
         # Need enable additional repos \
-        sed -i -e 's/enabled=0/enabled=1/' /etc/yum.repos.d/CentOS-PowerTools.repo; \
+        sed -i -e 's/enabled=0/enabled=1/' /etc/yum.repos.d/CentOS-Linux-PowerTools.repo; \
         rpm_extra_builds="libphonenumber"; \
     fi; \
     if [ "${base_image}" == "centos" -a "${image_tag}" == "7" ]; then \
