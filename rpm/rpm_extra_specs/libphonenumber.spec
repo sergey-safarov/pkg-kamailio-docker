@@ -1,5 +1,5 @@
 Name: libphonenumber
-Version: 8.12.11
+Version: 8.12.18
 Release: 2%{?dist}
 Summary: Library to handle international phone numbers
 # The project itself is ASL 2.0 but contains files from Chromium which are BSD and MIT.
